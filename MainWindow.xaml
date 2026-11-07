@@ -531,11 +531,12 @@
                 <ListBox x:Name="lstPages" Background="Transparent" BorderThickness="0" SelectionMode="Single"
                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         ScrollViewer.CanContentScroll="True"
+                         ScrollViewer.CanContentScroll="False"
                          VirtualizingPanel.IsVirtualizing="True"
                          VirtualizingPanel.VirtualizationMode="Recycling"
                          ItemContainerStyle="{StaticResource PageItemContainer}"
-                         SelectionChanged="LstPages_SelectionChanged" Padding="0,22,0,44">
+                         SelectionChanged="LstPages_SelectionChanged"
+                         PreviewMouseWheel="Pages_PreviewMouseWheel" Padding="0,22,0,44">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel/>

@@ -734,6 +734,14 @@ public partial class MainWindow : Window
 
     private void BtnFit_Click(object sender, RoutedEventArgs e) => FitWidth();
 
+    private void Pages_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        var scroller = FindScrollViewer(lstPages);
+        if (scroller is not { ScrollableHeight: > 0 }) return;
+        scroller.ScrollToVerticalOffset(scroller.VerticalOffset - e.Delta * 0.8);
+        e.Handled = true;
+    }
+
     private void BtnRotateLeft_Click(object sender, RoutedEventArgs e) => RotateSelected(-1);
 
     private void BtnRotateRight_Click(object sender, RoutedEventArgs e) => RotateSelected(1);
