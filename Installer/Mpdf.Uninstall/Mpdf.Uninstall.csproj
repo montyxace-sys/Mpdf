@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <RootNamespace>Mpdf.Uninstall</RootNamespace>
+    <AssemblyName>Mpdf.Uninstall</AssemblyName>
+    <Version>0.1.0</Version>
+    <ApplicationManifest Condition="'$(Configuration)' == 'Debug'">app.dev.manifest</ApplicationManifest>
+    <ApplicationManifest Condition="'$(Configuration)' != 'Debug'">app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
+    <ProjectReference Include="..\Mpdf.Installer.Core\Mpdf.Installer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\Shared\UiTheme.xaml" Link="UiTheme.xaml" />
+    <Resource Include="..\..\Images\icon.png" Link="Assets\icon.png" />
+  </ItemGroup>
+
+</Project>

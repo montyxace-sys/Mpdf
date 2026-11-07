@@ -29,8 +29,13 @@ jobs:
       - name: Pruebas del motor
         run: dotnet run --project tests/Mpdf.EngineTests -c Release
 
-      - name: Publicar ejecutable
-        run: dotnet publish Mpdf.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
+      - name: Pruebas del instalador
+        run: |
+          dotnet build tests/Mpdf.InstallerTests/Mpdf.InstallerTests.csproj -c Release
+          tests/Mpdf.InstallerTests/bin/Release/net48/Mpdf.InstallerTests.exe
+
+      - name: Generar instalador
+        run: ./build-setup.ps1
 
       - uses: actions/upload-artifact@v4
         with:

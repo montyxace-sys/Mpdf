@@ -25,6 +25,10 @@
     <Compile Remove="tests/**" />
     <Page Remove="tests/**" />
     <None Remove="tests/**" />
+    <Compile Remove="Installer/**" />
+    <Page Remove="Installer/**" />
+    <None Remove="Installer/**" />
+    <EmbeddedResource Remove="Installer/**" />
   </ItemGroup>
 
 </Project>

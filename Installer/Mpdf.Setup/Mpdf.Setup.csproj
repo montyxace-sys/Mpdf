@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <RootNamespace>Mpdf.Setup</RootNamespace>
+    <AssemblyName>Mpdf.Setup</AssemblyName>
+    <Version>0.1.0</Version>
+    <ApplicationManifest Condition="'$(Configuration)' == 'Debug'">app.dev.manifest</ApplicationManifest>
+    <ApplicationManifest Condition="'$(Configuration)' != 'Debug'">app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\icon.ico</ApplicationIcon>
+    <PayloadZip Condition="'$(PayloadZip)' == ''">$(MSBuildProjectDirectory)\..\..\publish\MpdfSetupPayload.zip</PayloadZip>
+    <UninstallerExe Condition="'$(UninstallerExe)' == ''">$(MSBuildProjectDirectory)\..\Mpdf.Uninstall\bin\$(Configuration)\net48\Mpdf.Uninstall.exe</UninstallerExe>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
+    <ProjectReference Include="..\Mpdf.Installer.Core\Mpdf.Installer.Core.csproj" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\Shared\UiTheme.xaml" Link="UiTheme.xaml" />
+    <Resource Include="..\..\Images\icon.png" Link="Assets\icon.png" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(PayloadZip)')">
+    <EmbeddedResource Include="$(PayloadZip)" LogicalName="Mpdf.payload.zip" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(UninstallerExe)')">
+    <EmbeddedResource Include="$(UninstallerExe)" LogicalName="Mpdf.uninstall.exe" />
+  </ItemGroup>
+
+  <Target Name="ValidateSetupPayload" BeforeTargets="CoreCompile">
+    <Warning Condition="!Exists('$(PayloadZip)')"
+             Text="Falta $(PayloadZip). Ejecuta build-setup.ps1 para generar el instalador completo." />
+    <Warning Condition="!Exists('$(UninstallerExe)')"
+             Text="Falta $(UninstallerExe). Compila antes el proyecto Mpdf.Uninstall." />
+  </Target>
+
+</Project>

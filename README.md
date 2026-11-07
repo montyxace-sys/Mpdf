@@ -58,8 +58,20 @@ dotnet run --project Mpdf.csproj
 Para generar un ejecutable autocontenido:
 
 ```powershell
-dotnet publish Mpdf.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+dotnet publish Mpdf.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 ```
+
+`IncludeNativeLibrariesForSelfExtract` guarda PDFium y las librerías nativas de WPF dentro de `Mpdf.exe`, de modo que el archivo funciona aunque se copie solo a otra carpeta.
+
+## Instalador
+
+El instalador solicita permisos de administrador e instala Mpdf para todos los usuarios en `C:\Program Files\Mpdf`. Permite elegir la carpeta y activar o desactivar los accesos directos del escritorio y del menú Inicio, la asociación de archivos `.pdf` y la ejecución como administrador (opcional; desactiva arrastrar y soltar archivos sobre la ventana). Añade la entrada en Aplicaciones instaladas y un desinstalador propio, y muestra el progreso con porcentaje real.
+
+```powershell
+.\build-setup.ps1
+```
+
+Genera `publish\Mpdf.exe` y `publish\MpdfSetup.exe`. El instalador incluye la aplicación y sus librerías nativas comprimidas, y no necesita conexión a Internet.
 
 ## Pruebas del motor
 
@@ -72,6 +84,15 @@ dotnet run --project tests/Mpdf.EngineTests
 
 Resultado actual: 138 comprobaciones, 0 fallos.
 
+Las pruebas del instalador comprueban la instalación en una carpeta temporal con registro aislado: extracción de archivos, accesos directos, asociaciones, entrada de desinstalación, ejecución como administrador, porcentaje de progreso y limpieza completa.
+
+```powershell
+dotnet build tests/Mpdf.InstallerTests/Mpdf.InstallerTests.csproj -c Release
+tests/Mpdf.InstallerTests/bin/Release/net48/Mpdf.InstallerTests.exe
+```
+
+Resultado actual: 39 comprobaciones, 0 fallos.
+
 ## Estructura
 
 ```
@@ -79,8 +100,9 @@ Controls/    Vistas, diálogos y la página interactiva
 Models/      Modelos de página, anotaciones e información del documento
 Services/    Sesión del documento y enlaces P/Invoke con PDFium
 Styles/      Tema y estilos WPF
+Installer/   Instalador y desinstalador (WPF para .NET Framework 4.8)
 test/        Generador de PDFs de prueba y utilidades de verificación
-tests/       Pruebas del motor
+tests/       Pruebas del motor y del instalador
 ```
 
 ## Limitaciones conocidas

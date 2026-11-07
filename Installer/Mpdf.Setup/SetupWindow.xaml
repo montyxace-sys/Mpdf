@@ -1,0 +1,231 @@
+<Window x:Class="Mpdf.Setup.SetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Instalar Mpdf"
+        Width="860" Height="700"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" ShowInTaskbar="True"
+        FontFamily="Segoe UI" UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        SnapsToDevicePixels="True">
+
+    <Border CornerRadius="14" Background="#FFFFFF" Margin="20">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="34" ShadowDepth="0" Opacity="0.3" Color="#0B1220"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="152"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="84"/>
+            </Grid.RowDefinitions>
+
+            <!-- Cabecera -->
+            <Border Grid.Row="0" CornerRadius="14,14,0,0" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#0B1220" Offset="0"/>
+                        <GradientStop Color="#1E293B" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Border Height="4" VerticalAlignment="Bottom" Background="{StaticResource AccentBrush}"/>
+                    <Grid Margin="34,28,22,22">
+                        <Button Style="{StaticResource CloseButton}" Content="&#xE8BB;"
+                                HorizontalAlignment="Right" VerticalAlignment="Top" Click="BtnClose_Click"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Width="66" Height="66" CornerRadius="15" Background="#16233A"
+                                    VerticalAlignment="Top" Margin="0,2,20,0">
+                                <Image Source="Assets/icon.png" Width="46" Height="46"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Mpdf" FontSize="30" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                <TextBlock Text="Editor de PDF gratuito y de código abierto"
+                                           FontSize="13" Foreground="#94A3B8" Margin="0,5,0,0"/>
+                                <TextBlock x:Name="txtVersion" Text="Versión 0.1.0"
+                                           FontSize="11.5" Foreground="#64748B" Margin="0,9,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Opciones -->
+            <Border Grid.Row="1" Padding="34,22,34,10">
+                <StackPanel>
+                    <TextBlock Text="CARPETA DE INSTALACIÓN" Style="{StaticResource SectionLabel}"/>
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Background="{StaticResource FieldBrush}" BorderBrush="{StaticResource LineBrush}"
+                                BorderThickness="1" CornerRadius="8" Padding="12,10">
+                            <TextBlock x:Name="txtPath" FontSize="12.5" Foreground="{StaticResource InkBrush}"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                        </Border>
+                        <Button x:Name="btnChangeFolder" Grid.Column="1" Style="{StaticResource SecondaryButton}"
+                                Content="Cambiar…" Margin="8,0,0,0" Padding="15,8"
+                                Click="BtnChangeFolder_Click"/>
+                    </Grid>
+
+                    <TextBlock Text="OPCIONES" Style="{StaticResource SectionLabel}" Margin="0,20,0,0"/>
+
+                    <CheckBox x:Name="chkDesktop" Style="{StaticResource OptionCheck}" IsChecked="True">
+                        <StackPanel>
+                            <TextBlock Text="Acceso directo en el escritorio" Style="{StaticResource OptionTitle}"/>
+                            <TextBlock Text="Crea un icono en el escritorio público del equipo."
+                                       Style="{StaticResource OptionHint}"/>
+                        </StackPanel>
+                    </CheckBox>
+
+                    <CheckBox x:Name="chkStartMenu" Style="{StaticResource OptionCheck}" IsChecked="True">
+                        <StackPanel>
+                            <TextBlock Text="Acceso directo en el menú Inicio" Style="{StaticResource OptionTitle}"/>
+                            <TextBlock Text="Añade Mpdf y Desinstalar Mpdf al menú Inicio."
+                                       Style="{StaticResource OptionHint}"/>
+                        </StackPanel>
+                    </CheckBox>
+
+                    <CheckBox x:Name="chkAssociate" Style="{StaticResource OptionCheck}" IsChecked="True">
+                        <StackPanel>
+                            <TextBlock Text="Abrir los archivos PDF con Mpdf" Style="{StaticResource OptionTitle}"/>
+                            <TextBlock Text="Registra Mpdf como aplicación para archivos .pdf."
+                                       Style="{StaticResource OptionHint}"/>
+                        </StackPanel>
+                    </CheckBox>
+
+                    <CheckBox x:Name="chkAdmin" Style="{StaticResource OptionCheck}">
+                        <StackPanel>
+                            <TextBlock Text="Ejecutar Mpdf siempre como administrador"
+                                       Style="{StaticResource OptionTitle}"/>
+                            <TextBlock Text="Solo si lo necesitas: desactiva arrastrar y soltar archivos sobre la ventana."
+                                       Style="{StaticResource OptionHint}"/>
+                        </StackPanel>
+                    </CheckBox>
+
+                    <Border Background="#FFF7ED" CornerRadius="8" Padding="12,10" Margin="0,16,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="#B45309" VerticalAlignment="Top" Margin="0,1,9,0"/>
+                            <TextBlock Grid.Column="1" TextWrapping="Wrap" FontSize="11.5" Foreground="#92400E"
+                                       Text="Se instalará para todos los usuarios de este equipo. Windows pedirá permisos de administrador."/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Pie -->
+            <Border x:Name="Footer" Grid.Row="2" Padding="34,0,28,0"
+                    BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="txtSize" Text="Espacio necesario: 131 MB"
+                                   FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                        <TextBlock Text="Instalación para todos los usuarios"
+                                   FontSize="11" Foreground="{StaticResource SoftMutedBrush}" Margin="0,3,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button x:Name="btnCancel" Style="{StaticResource SecondaryButton}" Content="Cancelar"
+                                Margin="0,0,10,0" Click="BtnCancel_Click"/>
+                        <Button x:Name="btnInstall" Style="{StaticResource PrimaryButton}" Content="Instalar"
+                                Click="BtnInstall_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Progreso -->
+            <Border x:Name="ProgressView" Grid.RowSpan="3" Background="#FFFFFF" CornerRadius="14"
+                    Visibility="Collapsed">
+                <Grid>
+                    <Button Style="{StaticResource CloseButton}" Content="&#xE8BB;" IsEnabled="False"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,18,0"/>
+                    <StackPanel Width="460" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Instalando Mpdf" FontSize="25" FontWeight="SemiBold"
+                                   Foreground="{StaticResource InkBrush}" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="txtPercent" Text="0 %" FontSize="54" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentBrush}" HorizontalAlignment="Center"
+                                   Margin="0,16,0,12"/>
+                        <ProgressBar x:Name="Bar" Style="{StaticResource ModernProgress}"
+                                     Minimum="0" Maximum="100" Value="0" Height="10"/>
+                        <TextBlock x:Name="txtProgressStatus" Text="Preparando la instalación…"
+                                   FontSize="13" Foreground="{StaticResource MutedBrush}"
+                                   HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                        <TextBlock Text="No cierres esta ventana." FontSize="11.5"
+                                   Foreground="{StaticResource SoftMutedBrush}"
+                                   HorizontalAlignment="Center" Margin="0,30,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Completado -->
+            <Border x:Name="DoneView" Grid.RowSpan="3" Background="#FFFFFF" CornerRadius="14"
+                    Visibility="Collapsed">
+                <Grid>
+                    <Button Style="{StaticResource CloseButton}" Content="&#xE8BB;"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,18,0"
+                            Click="BtnDoneClose_Click"/>
+                    <StackPanel Width="500" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid Width="84" Height="84" HorizontalAlignment="Center">
+                            <Ellipse Fill="{StaticResource SuccessSoftBrush}"/>
+                            <Ellipse Width="64" Height="64" Fill="{StaticResource SuccessBrush}"/>
+                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="30"
+                                       Foreground="#FFFFFF" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                        <TextBlock Text="¡Completado!" FontSize="27" FontWeight="Bold"
+                                   Foreground="{StaticResource InkBrush}" HorizontalAlignment="Center"
+                                   Margin="0,20,0,0"/>
+                        <TextBlock Text="Mpdf se ha instalado correctamente."
+                                   FontSize="13.5" Foreground="{StaticResource MutedBrush}"
+                                   HorizontalAlignment="Center" Margin="0,7,0,0"/>
+                        <Border Background="{StaticResource FieldBrush}" BorderBrush="{StaticResource LineBrush}"
+                                BorderThickness="1" CornerRadius="9" Padding="14,11" Margin="0,20,0,0">
+                            <TextBlock x:Name="txtDonePath" FontSize="12" Foreground="{StaticResource InkBrush}"
+                                       TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,28,0,0">
+                            <Button x:Name="btnOpen" Style="{StaticResource SecondaryButton}" Content="Abrir Mpdf"
+                                    Margin="0,0,10,0" Click="BtnOpen_Click"/>
+                            <Button x:Name="btnDoneClose" Style="{StaticResource PrimaryButton}" Content="Cerrar"
+                                    Click="BtnDoneClose_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Error -->
+            <Border x:Name="ErrorView" Grid.RowSpan="3" Background="#FFFFFF" CornerRadius="14"
+                    Visibility="Collapsed">
+                <Grid>
+                    <Button Style="{StaticResource CloseButton}" Content="&#xE8BB;"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,18,0"
+                            Click="BtnDoneClose_Click"/>
+                    <StackPanel Width="500" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid Width="84" Height="84" HorizontalAlignment="Center">
+                            <Ellipse Fill="{StaticResource DangerSoftBrush}"/>
+                            <Ellipse Width="64" Height="64" Fill="{StaticResource DangerBrush}"/>
+                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="28"
+                                       Foreground="#FFFFFF" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                        <TextBlock Text="No se pudo instalar" FontSize="25" FontWeight="Bold"
+                                   Foreground="{StaticResource InkBrush}" HorizontalAlignment="Center"
+                                   Margin="0,18,0,0"/>
+                        <TextBlock x:Name="txtError" FontSize="13" Foreground="{StaticResource MutedBrush}"
+                                   TextWrapping="Wrap" TextAlignment="Center" Margin="0,10,0,0"
+                                   LineHeight="20"/>
+                        <Button Style="{StaticResource PrimaryButton}" Content="Cerrar"
+                                HorizontalAlignment="Center" Margin="0,26,0,0" Click="BtnDoneClose_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
