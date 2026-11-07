@@ -1,0 +1,667 @@
+﻿<Window x:Class="Mpdf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Mpdf.Controls"
+        Title="Mpdf — Editor PDF" Height="880" Width="1380" MinHeight="620" MinWidth="1180"
+        WindowStyle="None" ResizeMode="CanResize" Background="{StaticResource AppBackgroundBrush}"
+        AllowDrop="True" Drop="Window_Drop" DragOver="Window_DragOver"
+        Closing="Window_Closing" Loaded="Window_Loaded" PreviewKeyDown="Window_PreviewKeyDown"
+        UseLayoutRounding="True" SnapsToDevicePixels="True">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="RootLayout">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="46"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barra superior -->
+        <Border x:Name="topBar" Grid.Row="0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#0B1220" Offset="0"/>
+                    <GradientStop Color="#111C2E" Offset="0.55"/>
+                    <GradientStop Color="#16233A" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid Margin="12,0,6,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource AccentBrush}"
+                        VerticalAlignment="Center">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,2,0,0">
+                        <TextBlock Text="M" Foreground="White" FontSize="18" FontWeight="Bold"
+                                   HorizontalAlignment="Center" LineHeight="17"
+                                   LineStackingStrategy="BlockLineHeight"/>
+                        <TextBlock Text="PDF" Foreground="#FFD1DA" FontSize="6" FontWeight="Bold"
+                                   HorizontalAlignment="Center" Margin="0,0,0,0"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Column="1" Margin="9,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="Mpdf" Foreground="White" FontSize="15" FontWeight="Bold"/>
+                    <TextBlock Text="Editor PDF" Foreground="#8FA3BF" FontSize="9.5"/>
+                </StackPanel>
+
+                <Border Grid.Column="2" Width="1" Height="19" Background="#2A3952" Margin="14,0"/>
+
+                <TextBlock x:Name="txtFileName" Grid.Column="3" Text="Sin documento" Foreground="#94A3B8"
+                           FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+
+                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="btnOpen" Style="{StaticResource TopBarButton}" Click="BtnOpen_Click"
+                            ToolTip="Abrir PDF (Ctrl+O)">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Abrir" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="btnSave" Style="{StaticResource TopBarButton}" Click="BtnSave_Click"
+                            ToolTip="Guardar (Ctrl+S)" IsEnabled="False">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Guardar" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="btnSaveAs" Style="{StaticResource TopBarButton}" Click="BtnSaveAs_Click"
+                            ToolTip="Guardar como (Ctrl+Shift+S)" IsEnabled="False">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Guardar como" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="btnTools" Style="{StaticResource TopBarButton}" Click="BtnTools_Click"
+                            ToolTip="Herramientas del documento">
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem x:Name="miInsertBlank" Header="Insertar página en blanco" Click="MenuInsertBlank_Click"/>
+                                <MenuItem x:Name="miInsertPdf" Header="Insertar PDF…" Click="MenuInsertPdf_Click"/>
+                                <Separator/>
+                                <MenuItem x:Name="miExtractRange" Header="Extraer rango de páginas…"
+                                          Click="MenuExtractRange_Click"/>
+                                <MenuItem x:Name="miSplit" Header="Dividir PDF…" Click="MenuSplit_Click"/>
+                                <MenuItem Header="Combinar PDFs…" Click="MenuMerge_Click"/>
+                                <MenuItem x:Name="miExportImages" Header="Exportar páginas como imágenes…"
+                                          Click="MenuExportImages_Click"/>
+                                <Separator/>
+                                <MenuItem x:Name="miPageNumbers" Header="Añadir numeración…"
+                                          Click="MenuPageNumbers_Click"/>
+                                <MenuItem x:Name="miWatermark" Header="Marca de agua…"
+                                          Click="MenuWatermark_Click"/>
+                                <MenuItem x:Name="miRotateAll" Header="Girar todas las páginas">
+                                    <MenuItem Header="90° a la derecha" Click="MenuRotateAllRight_Click"/>
+                                    <MenuItem Header="90° a la izquierda" Click="MenuRotateAllLeft_Click"/>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem x:Name="miProperties" Header="Propiedades del documento…"
+                                          Click="MenuProperties_Click"/>
+                                <MenuItem x:Name="miCopyText" Header="Copiar texto de esta página"
+                                          Click="MenuCopyText_Click"/>
+                                <MenuItem x:Name="miExportText" Header="Exportar texto…" Click="MenuExportText_Click"/>
+                                <Separator/>
+                                <MenuItem Header="Paleta de comandos…    Ctrl+K" Click="MenuPalette_Click"/>
+                                <MenuItem Header="Pantalla completa        F11" Click="MenuFullscreen_Click"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE700;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Herramientas" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                    <Button Style="{StaticResource WindowButton}" Content="&#xE921;" Click="BtnMinimize_Click"
+                            ToolTip="Minimizar"/>
+                    <Button Style="{StaticResource WindowButton}" Content="&#xE922;" Click="BtnMaximize_Click"
+                            ToolTip="Maximizar"/>
+                    <Button Style="{StaticResource CloseWindowButton}" Content="&#xE8BB;" Click="BtnClose_Click"
+                            ToolTip="Cerrar"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Barra de herramientas -->
+        <Border x:Name="toolBar" Grid.Row="1" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1">
+            <Grid Margin="10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <ToggleButton x:Name="tglSelect" Style="{StaticResource ToolToggle}" Tag="Select"
+                                  Click="Tool_Click" ToolTip="Seleccionar">
+                        <StackPanel>
+                            <TextBlock Text="&#xE7C9;" Style="{StaticResource ToolIcon}"/>
+                            <TextBlock Text="Seleccionar" Style="{StaticResource ToolLabel}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="tglHighlight" Style="{StaticResource ToolToggle}" Tag="Highlight"
+                                  Click="Tool_Click" ToolTip="Resaltar (área de texto)">
+                        <StackPanel>
+                            <TextBlock Text="&#xE7E6;" Style="{StaticResource ToolIcon}" Foreground="#D97706"/>
+                            <TextBlock Text="Resaltar" Style="{StaticResource ToolLabel}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="tglUnderline" Style="{StaticResource ToolToggle}" Tag="Underline"
+                                  Click="Tool_Click" ToolTip="Subrayar (área)">
+                        <StackPanel>
+                            <TextBlock Text="&#xE8DC;" Style="{StaticResource ToolIcon}"/>
+                            <TextBlock Text="Subrayar" Style="{StaticResource ToolLabel}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="tglStrikeout" Style="{StaticResource ToolToggle}" Tag="Strikeout"
+                                  Click="Tool_Click" ToolTip="Tachar (área)">
+                        <StackPanel>
+                            <TextBlock Text="S" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       TextDecorations="Strikethrough"/>
+                            <TextBlock Text="Tachar" Style="{StaticResource ToolLabel}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="tglPen" Style="{StaticResource ToolToggle}" Tag="Pen"
+                                  Click="Tool_Click" ToolTip="Lápiz">
+                        <StackPanel>
+                            <TextBlock Text="&#xE70F;" Style="{StaticResource ToolIcon}"/>
+                            <TextBlock Text="Lápiz" Style="{StaticResource ToolLabel}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="tglRectangle" Style="{StaticResource ToolToggle}" Tag="Rectangle"
+                                  Click="Tool_Click" ToolTip="Rectángulo">
+                        <StackPanel>
+                            <TextBlock Text="▭" FontSize="16" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Forma" Style="{StaticResource ToolLabel}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="tglEraser" Style="{StaticResource ToolToggle}" Tag="Eraser"
+                                  Click="Tool_Click" ToolTip="Borrar una marca existente">
+                        <StackPanel>
+                            <TextBlock Text="&#xE75C;" Style="{StaticResource ToolIcon}"/>
+                            <TextBlock Text="Borrador" Style="{StaticResource ToolLabel}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+
+                <Border Grid.Column="1" Width="1" Height="34" Background="{StaticResource LineBrush}"
+                        Margin="7,0" VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="btnUndo" Style="{StaticResource IconButton}" Content="&#xE7A7;"
+                            Click="BtnUndo_Click" ToolTip="Deshacer (Ctrl+Z)" IsEnabled="False"/>
+                    <Button x:Name="btnRedo" Style="{StaticResource IconButton}" Content="&#xE7A6;"
+                            Click="BtnRedo_Click" ToolTip="Rehacer (Ctrl+Y)" IsEnabled="False"/>
+                    <Button x:Name="btnClearMarks" Style="{StaticResource IconButton}" Content="&#xE74D;"
+                            Click="BtnClearMarks_Click" ToolTip="Quitar marcas de esta página" IsEnabled="False"/>
+                    <StackPanel Orientation="Horizontal" Margin="8,0,0,0" VerticalAlignment="Center">
+                        <Button x:Name="btnColorRed" Click="Color_Click" Tag="#E11D48" ToolTip="Rojo"
+                                Width="18" Height="18" Margin="0,0,5,0" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Ellipse Fill="#E11D48" Width="16" Height="16"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button x:Name="btnColorBlue" Click="Color_Click" Tag="#2563EB" ToolTip="Azul"
+                                Width="18" Height="18" Margin="0,0,5,0" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Ellipse Fill="#2563EB" Width="16" Height="16"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button x:Name="btnColorGreen" Click="Color_Click" Tag="#059669" ToolTip="Verde"
+                                Width="18" Height="18" Margin="0,0,5,0" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Ellipse Fill="#059669" Width="16" Height="16"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button x:Name="btnColorBlack" Click="Color_Click" Tag="#111827" ToolTip="Negro"
+                                Width="18" Height="18" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Ellipse Fill="#111827" Width="16" Height="16"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+
+                <Grid Grid.Column="4" Width="306" Height="34" VerticalAlignment="Center" Margin="12,0">
+                    <Border Background="#F1F5F9" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1"/>
+                    <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#64748B"
+                               VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                    <TextBox x:Name="txtSearch" Background="Transparent" BorderThickness="0" Margin="30,1,66,1"
+                             VerticalContentAlignment="Center" FontSize="12" KeyDown="TxtSearch_KeyDown"
+                             TextChanged="TxtSearch_TextChanged"/>
+                    <TextBlock x:Name="searchHint" Text="Buscar en el documento" IsHitTestVisible="False"
+                               VerticalAlignment="Center" Margin="31,0,0,0" Foreground="#94A3B8" FontSize="12"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Margin="0,0,6,0">
+                        <TextBlock x:Name="txtSearchCount" FontSize="10.5" Foreground="{StaticResource MutedBrush}"
+                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <Button x:Name="btnSearchPrev" Style="{StaticResource IconButton}" Width="24" Height="24"
+                                Content="&#xE70E;" FontSize="10" Click="BtnSearchPrev_Click" ToolTip="Anterior (Shift+F3)"/>
+                        <Button x:Name="btnSearchNext" Style="{StaticResource IconButton}" Width="24" Height="24"
+                                Content="&#xE70D;" FontSize="10" Click="BtnSearchNext_Click" ToolTip="Siguiente (F3)"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="btnZoomOut" Style="{StaticResource IconButton}" Content="&#xE71F;"
+                            Click="BtnZoomOut_Click" ToolTip="Reducir"/>
+                    <TextBlock x:Name="txtZoom" Text="100 %" FontSize="11" Foreground="{StaticResource MutedBrush}"
+                               Width="46" TextAlignment="Center" VerticalAlignment="Center"/>
+                    <Button x:Name="btnZoomIn" Style="{StaticResource IconButton}" Content="&#xE8A3;"
+                            Click="BtnZoomIn_Click" ToolTip="Ampliar"/>
+                    <Button x:Name="btnFit" Style="{StaticResource TextButton}" Content="Ajustar"
+                            Click="BtnFit_Click" FontSize="11" Padding="9,6" Margin="4,0,0,0"
+                            ToolTip="Ajustar al ancho (Ctrl+0)"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Cuerpo -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="SidebarColumn" Width="192"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border x:Name="sideBar" Grid.Column="0" Background="White" BorderBrush="{StaticResource LineBrush}"
+                    BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <UniformGrid Grid.Row="0" Columns="4" Background="#F8FAFC">
+                        <ToggleButton x:Name="tabPages" Style="{StaticResource SidebarTab}" Tag="Pages"
+                                      Click="SidebarTab_Click" Checked="SidebarTab_Checked" ToolTip="Páginas" IsChecked="True">
+                            <StackPanel>
+                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Págs" FontSize="7.5" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </ToggleButton>
+                        <ToggleButton x:Name="tabBookmarks" Style="{StaticResource SidebarTab}" Tag="Bookmarks"
+                                      Click="SidebarTab_Click" Checked="SidebarTab_Checked" ToolTip="Marcadores del PDF">
+                            <StackPanel>
+                                <TextBlock Text="&#xE8A4;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Marcas" FontSize="7.5" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </ToggleButton>
+                        <ToggleButton x:Name="tabComments" Style="{StaticResource SidebarTab}" Tag="Comments"
+                                      Click="SidebarTab_Click" Checked="SidebarTab_Checked" ToolTip="Comentarios y anotaciones">
+                            <StackPanel>
+                                <TextBlock Text="&#xE90A;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Notas" FontSize="7.5" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </ToggleButton>
+                        <ToggleButton x:Name="tabAttachments" Style="{StaticResource SidebarTab}" Tag="Attachments"
+                                      Click="SidebarTab_Click" Checked="SidebarTab_Checked" ToolTip="Archivos adjuntos">
+                            <StackPanel>
+                                <TextBlock Text="&#xE723;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Adjuntos" FontSize="7.5" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </ToggleButton>
+                    </UniformGrid>
+
+                    <Grid Grid.Row="1">
+                        <Grid x:Name="pagesPanel">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Margin="14,10,10,5">
+                                <TextBlock Text="PÁGINAS" Style="{StaticResource SectionLabel}" VerticalAlignment="Center"/>
+                                <Border Background="#F1F5F9" CornerRadius="8" Padding="7,2" HorizontalAlignment="Right">
+                                    <TextBlock x:Name="txtPageCount" Text="0" FontSize="10" FontWeight="SemiBold"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </Border>
+                            </Grid>
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,10,2">
+                                <Button Style="{StaticResource IconButton}" Click="BtnRotateLeft_Click" ToolTip="Girar a la izquierda"
+                                        FontFamily="Segoe UI" FontSize="14" Content="↺"/>
+                                <Button Style="{StaticResource IconButton}" Click="BtnRotateRight_Click" ToolTip="Girar a la derecha"
+                                        FontFamily="Segoe UI" FontSize="14" Content="↻"/>
+                                <Button Style="{StaticResource IconButton}" Click="BtnMoveUp_Click" ToolTip="Subir página"
+                                        Content="&#xE74A;"/>
+                                <Button Style="{StaticResource IconButton}" Click="BtnMoveDown_Click" ToolTip="Bajar página"
+                                        Content="&#xE74B;"/>
+                                <Button Style="{StaticResource IconButton}" Click="BtnDeletePage_Click" ToolTip="Eliminar página"
+                                        Content="&#xE74D;"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10,0,10,8">
+                                <Button Style="{StaticResource TextButton}" Content="Extraer" FontSize="10.5"
+                                        Padding="9,5" Click="BtnExtractPage_Click" ToolTip="Guardar esta página como un PDF nuevo"/>
+                                <Button Style="{StaticResource TextButton}" Content="Combinar PDF" FontSize="10.5"
+                                        Padding="9,5" Margin="6,0,0,0" Click="BtnMerge_Click"/>
+                            </StackPanel>
+
+                            <ListBox x:Name="lstThumbs" Grid.Row="3" Background="Transparent" BorderThickness="0"
+                                     SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     VirtualizingPanel.IsVirtualizing="True"
+                                     VirtualizingPanel.VirtualizationMode="Recycling"
+                                     ItemContainerStyle="{StaticResource ThumbItemContainer}"
+                                     SelectionChanged="LstThumbs_SelectionChanged" Padding="4,0,4,10">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <controls:ThumbnailView/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Border Grid.Row="4" Background="#F8FAFC" BorderBrush="{StaticResource LineBrush}"
+                                    BorderThickness="0,1,0,0" Padding="12,9">
+                                <StackPanel>
+                                    <TextBlock Text="Arrastra un PDF aquí" FontSize="10.5" Foreground="{StaticResource MutedBrush}"/>
+                                    <TextBlock Text="Mpdf · open source" FontSize="9.5" Foreground="{StaticResource SoftMutedBrush}"
+                                               Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Grid x:Name="bookmarksPanel" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Margin="14,10,10,6">
+                                <TextBlock Text="MARCADORES" Style="{StaticResource SectionLabel}" VerticalAlignment="Center"/>
+                                <Border Background="#F1F5F9" CornerRadius="8" Padding="7,2" HorizontalAlignment="Right">
+                                    <TextBlock x:Name="txtBookmarkCount" Text="0" FontSize="10" FontWeight="SemiBold"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </Border>
+                            </Grid>
+                            <TreeView x:Name="treeBookmarks" Grid.Row="1" Background="Transparent" BorderThickness="0"
+                                      Padding="6,0,4,10" SelectedItemChanged="TreeBookmarks_SelectedItemChanged">
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                        <TextBlock Text="{Binding Title}" FontSize="11"
+                                                   Foreground="{StaticResource InkBrush}"
+                                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}"/>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                            <TextBlock x:Name="bookmarksEmpty" Grid.Row="1" Text="Este PDF no tiene marcadores."
+                                       FontSize="10.5" Foreground="{StaticResource SoftMutedBrush}"
+                                       TextWrapping="Wrap" TextAlignment="Center" Margin="18,14"
+                                       VerticalAlignment="Top"/>
+                        </Grid>
+
+                        <Grid x:Name="commentsPanel" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Margin="14,10,10,6">
+                                <TextBlock Text="COMENTARIOS" Style="{StaticResource SectionLabel}" VerticalAlignment="Center"/>
+                                <Border Background="#F1F5F9" CornerRadius="8" Padding="7,2" HorizontalAlignment="Right">
+                                    <TextBlock x:Name="txtCommentCount" Text="0" FontSize="10" FontWeight="SemiBold"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </Border>
+                            </Grid>
+                            <ListBox x:Name="lstComments" Grid.Row="1" Background="Transparent" BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ItemContainerStyle="{StaticResource PanelListContainer}"
+                                     SelectionChanged="LstComments_SelectionChanged" Padding="0,0,0,10">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="8,6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="4"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Background="{Binding ColorBrush}" CornerRadius="2" Width="3"/>
+                                                <StackPanel Grid.Column="1" Margin="8,0,4,0">
+                                                    <TextBlock Text="{Binding Title}" FontSize="10.5" FontWeight="SemiBold"
+                                                               Foreground="{StaticResource InkBrush}"/>
+                                                    <TextBlock Text="{Binding Subtitle}" FontSize="9.5"
+                                                               Foreground="{StaticResource MutedBrush}" Margin="0,1,0,0"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="2" Style="{StaticResource IconButton}"
+                                                        Width="24" Height="24" FontSize="10" Content="&#xE74D;"
+                                                        Tag="{Binding}" Click="CommentDelete_Click"
+                                                        ToolTip="Eliminar esta marca"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <TextBlock x:Name="commentsEmpty" Grid.Row="1" Text="Aún no hay marcas ni comentarios."
+                                       FontSize="10.5" Foreground="{StaticResource SoftMutedBrush}"
+                                       TextWrapping="Wrap" TextAlignment="Center" Margin="18,14"
+                                       VerticalAlignment="Top"/>
+                        </Grid>
+
+                        <Grid x:Name="attachmentsPanel" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Margin="14,10,10,6">
+                                <TextBlock Text="ADJUNTOS" Style="{StaticResource SectionLabel}" VerticalAlignment="Center"/>
+                                <Border Background="#F1F5F9" CornerRadius="8" Padding="7,2" HorizontalAlignment="Right">
+                                    <TextBlock x:Name="txtAttachmentCount" Text="0" FontSize="10" FontWeight="SemiBold"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </Border>
+                            </Grid>
+                            <ListBox x:Name="lstAttachments" Grid.Row="1" Background="Transparent" BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ItemContainerStyle="{StaticResource PanelListContainer}"
+                                     Padding="0,0,0,10">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="8,6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontSize="10.5"
+                                                               Foreground="{StaticResource InkBrush}"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding SizeText}" FontSize="9.5"
+                                                               Foreground="{StaticResource MutedBrush}" Margin="0,1,0,0"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="1" Style="{StaticResource TextButton}"
+                                                        Content="Guardar" FontSize="9.5" Padding="7,4"
+                                                        Tag="{Binding}" Click="AttachmentSave_Click"/>
+                                                <Button Grid.Column="2" Style="{StaticResource IconButton}"
+                                                        Width="24" Height="24" FontSize="11" Content="&#xE8E5;"
+                                                        Tag="{Binding}" Click="AttachmentOpen_Click"
+                                                        ToolTip="Guardar y abrir"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <TextBlock x:Name="attachmentsEmpty" Grid.Row="1" Text="Este PDF no tiene archivos adjuntos."
+                                       FontSize="10.5" Foreground="{StaticResource SoftMutedBrush}"
+                                       TextWrapping="Wrap" TextAlignment="Center" Margin="18,14"
+                                       VerticalAlignment="Top"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1" Background="{StaticResource CanvasBrush}">
+                <ListBox x:Name="lstPages" Background="Transparent" BorderThickness="0" SelectionMode="Single"
+                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ScrollViewer.CanContentScroll="True"
+                         VirtualizingPanel.IsVirtualizing="True"
+                         VirtualizingPanel.VirtualizationMode="Recycling"
+                         ItemContainerStyle="{StaticResource PageItemContainer}"
+                         SelectionChanged="LstPages_SelectionChanged" Padding="0,22,0,44">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <controls:PageView Margin="0,0,0,20"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel x:Name="emptyState" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Border Width="86" Height="86" CornerRadius="22" Background="White" HorizontalAlignment="Center">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="24" ShadowDepth="3" Opacity="0.14" Color="#1E293B"/>
+                        </Border.Effect>
+                        <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="34"
+                                   Foreground="{StaticResource AccentBrush}" HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="Abre un PDF para empezar" FontSize="21" FontWeight="SemiBold"
+                               Foreground="{StaticResource InkBrush}" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                    <TextBlock Text="Arrastra un archivo aquí o elige uno de tu equipo."
+                               Style="{StaticResource CaptionText}" HorizontalAlignment="Center" Margin="0,6,0,18"/>
+                    <Button Content="Abrir PDF" Style="{StaticResource AccentButton}" Click="BtnOpenEmpty_Click"
+                            HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <Border x:Name="fullscreenHint" Visibility="Collapsed" Background="#CC0B1220" CornerRadius="8"
+                        Padding="10,6" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Margin="0,12,16,0" Panel.ZIndex="60" IsHitTestVisible="False">
+                    <TextBlock Text="F11 o Esc para salir de pantalla completa" Foreground="White"
+                               FontSize="10.5"/>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Barra de estado -->
+        <Border x:Name="statusBar" Grid.Row="3" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0">
+            <Grid Margin="14,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="txtStatusPage" Grid.Column="0" Text="Sin documento" FontSize="10.5"
+                           Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                <TextBlock x:Name="txtStatus" Grid.Column="1" Text="Listo." FontSize="10.5"
+                           Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"
+                           HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="txtDirty" Text="" FontSize="10.5" Foreground="{StaticResource MutedBrush}"
+                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBlock x:Name="txtZoomStatus" Text="" FontSize="10.5"
+                               Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Paleta de comandos -->
+        <Border x:Name="paletteOverlay" Grid.RowSpan="4" Background="#660B1220" Visibility="Collapsed"
+                Panel.ZIndex="200" MouseLeftButtonDown="PaletteBackdrop_MouseLeftButtonDown">
+            <Border x:Name="paletteCard" Width="560" Background="White" CornerRadius="16" Padding="18"
+                    HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,110,0,0"
+                    MouseLeftButtonDown="PaletteCard_MouseLeftButtonDown">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="34" ShadowDepth="6" Opacity="0.28" Color="#0B1220"/>
+                </Border.Effect>
+                <StackPanel>
+                    <Grid Height="42">
+                        <Border Background="#F1F5F9" CornerRadius="9" BorderBrush="#E2E8F0" BorderThickness="1"/>
+                        <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="#64748B" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                        <TextBox x:Name="txtPalette" Background="Transparent" BorderThickness="0"
+                                 Margin="36,0,10,0" FontSize="13.5" VerticalContentAlignment="Center"
+                                 TextChanged="TxtPalette_TextChanged" KeyDown="TxtPalette_KeyDown"/>
+                        <TextBlock x:Name="paletteHint" Text="Escribe un comando…" IsHitTestVisible="False"
+                                   FontSize="13.5" Foreground="#94A3B8" VerticalAlignment="Center"
+                                   Margin="37,0,0,0"/>
+                    </Grid>
+                    <ListBox x:Name="lstPalette" Height="330" Margin="0,10,0,0" Background="Transparent"
+                             BorderThickness="0" ItemContainerStyle="{StaticResource PanelListContainer}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             MouseDoubleClick="LstPalette_MouseDoubleClick">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="8,7">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}" FontSize="12"
+                                                   Foreground="{StaticResource InkBrush}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Hint}" FontSize="9.5"
+                                                   Foreground="{StaticResource SoftMutedBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Text="↑ ↓ para mover · Enter para ejecutar · Esc para cerrar"
+                               FontSize="9.5" Foreground="{StaticResource SoftMutedBrush}"
+                               Margin="4,8,0,0"/>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <!-- Bloqueo de operaciones -->
+        <Border x:Name="busyOverlay" Grid.RowSpan="4" Background="#660B1220" Visibility="Collapsed"
+                Panel.ZIndex="300">
+            <Border Background="White" CornerRadius="14" Padding="28,22" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" MinWidth="280">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="30" ShadowDepth="4" Opacity="0.3" Color="#0B1220"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock x:Name="busyText" Text="Procesando…" FontSize="13" FontWeight="SemiBold"
+                               Foreground="{StaticResource InkBrush}" HorizontalAlignment="Center"/>
+                    <ProgressBar IsIndeterminate="True" Height="4" Width="220" Margin="0,14,0,0"
+                                 Foreground="{StaticResource AccentBrush}" Background="#E2E8F0"
+                                 BorderThickness="0"/>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</Window>

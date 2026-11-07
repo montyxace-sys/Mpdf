@@ -1,0 +1,38 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Restaurar y compilar
+        run: dotnet build Mpdf.csproj -c Release
+
+      - name: Generar PDFs de prueba
+        run: node test/make-test-pdfs.js
+
+      - name: Pruebas del motor
+        run: dotnet run --project tests/Mpdf.EngineTests -c Release
+
+      - name: Publicar ejecutable
+        run: dotnet publish Mpdf.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Mpdf-win-x64
+          path: publish/

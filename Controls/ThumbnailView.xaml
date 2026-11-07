@@ -1,0 +1,18 @@
+<UserControl x:Class="Mpdf.Controls.ThumbnailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel HorizontalAlignment="Center">
+        <Border Width="118" Height="{Binding ThumbnailHeight}" Background="White"
+                BorderBrush="#D7DFEA" BorderThickness="1" CornerRadius="2"
+                HorizontalAlignment="Center" SnapsToDevicePixels="True">
+            <Grid>
+                <Image Source="{Binding Thumbnail}" Stretch="Uniform"
+                       RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="True"/>
+                <TextBlock Text="…" Style="{StaticResource CaptionText}" HorizontalAlignment="Center"
+                           VerticalAlignment="Center" x:Name="placeholder"/>
+            </Grid>
+        </Border>
+        <TextBlock Text="{Binding DisplayLabel}" FontSize="10.5" Foreground="{StaticResource MutedBrush}"
+                   HorizontalAlignment="Center" Margin="0,4,0,0"/>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,32 @@
+<UserControl x:Class="Mpdf.Controls.PageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Width="{Binding DisplayWidth}" Height="{Binding DisplayHeight}">
+    <Border Background="White" CornerRadius="3" SnapsToDevicePixels="True">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.18" Color="#1E293B"/>
+        </Border.Effect>
+        <Grid x:Name="surface" ClipToBounds="True">
+            <Image x:Name="pageImage" Stretch="Fill" RenderOptions.BitmapScalingMode="HighQuality"
+                   SnapsToDevicePixels="True"/>
+            <Canvas x:Name="overlay" Background="Transparent"
+                    MouseLeftButtonDown="Overlay_MouseLeftButtonDown"
+                    MouseMove="Overlay_MouseMove"
+                    MouseLeftButtonUp="Overlay_MouseLeftButtonUp"/>
+            <Border x:Name="loadingBox" Background="#F8FAFC" Visibility="Collapsed">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <ProgressBar IsIndeterminate="True" Width="120" Height="4"
+                                 Foreground="{StaticResource AccentBrush}" Background="#E2E8F0"
+                                 BorderThickness="0"/>
+                    <TextBlock Text="Cargando página…" Style="{StaticResource CaptionText}"
+                               HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+            <Border x:Name="errorBox" Background="#FEF2F2" Visibility="Collapsed">
+                <TextBlock x:Name="errorText" Foreground="#B91C1C" FontSize="11" TextWrapping="Wrap"
+                           Margin="18" VerticalAlignment="Center" HorizontalAlignment="Center"
+                           TextAlignment="Center"/>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>
