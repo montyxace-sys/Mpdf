@@ -17,7 +17,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
-    <ProjectReference Include="..\Mpdf.Installer.Core\Mpdf.Installer.Core.csproj" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- El núcleo se compila dentro del desinstalador para que sea un único archivo. -->
+    <Compile Include="..\Mpdf.Installer.Core\*.cs" Link="Core\%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>

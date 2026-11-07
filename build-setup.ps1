@@ -40,7 +40,7 @@ try {
     if (Test-Path $payloadSource) { Remove-Item $payloadSource -Recurse -Force }
     New-Item -ItemType Directory -Path $payloadSource | Out-Null
     Get-ChildItem $publishDir -File |
-        Where-Object { $_.Extension -ne ".pdb" -and $_.Name -ne "MpdfSetup.exe" } |
+        Where-Object { $_.Extension -ne ".pdb" -and $_.Name -ne "MpdfSetup.exe" -and $_.Name -ne "MpdfSetupPayload.zip" } |
         ForEach-Object { Copy-Item $_.FullName (Join-Path $payloadSource $_.Name) }
 
     $payloadZip = Join-Path $publishDir "MpdfSetupPayload.zip"
@@ -51,7 +51,19 @@ try {
         $payloadZip,
         [System.IO.Compression.CompressionLevel]::Optimal,
         $false)
+
+    $payloadCheck = [System.IO.Compression.ZipFile]::OpenRead($payloadZip)
+    try {
+        $payloadNames = @($payloadCheck.Entries | ForEach-Object { $_.FullName })
+    }
+    finally {
+        $payloadCheck.Dispose()
+    }
     Remove-Item $payloadSource -Recurse -Force
+    if ($payloadNames -notcontains "Mpdf.exe") {
+        throw "El payload no contiene Mpdf.exe. Revisa publish\."
+    }
+    Write-Host ("Payload: {0}" -f ($payloadNames -join ", ")) -ForegroundColor DarkGray
 
     Write-Host "Compilando el desinstalador..." -ForegroundColor Cyan
     dotnet build "Installer\Mpdf.Uninstall\Mpdf.Uninstall.csproj" -c $Configuration
