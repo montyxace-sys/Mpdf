@@ -6,16 +6,8 @@ Editor de PDF gratuito y de código abierto para Windows, con una interfaz moder
 
 ## Descargar
 
-[**MpdfSetup.exe**](https://github.com/montyxace-sys/Mpdf/releases/latest/download/MpdfSetup.exe) · instalador para Windows 10/11 de 64 bits. Incluye la aplicación, PDFium y todo lo necesario; no requiere conexión a Internet.
-
-¿Prefieres no instalar nada? Descarga [Mpdf.exe](https://github.com/montyxace-sys/Mpdf/releases/latest/download/Mpdf.exe) y ejecútalo directamente.
-
-### Espejo en MEGA
-
-Si las descargas de GitHub no te funcionan, los mismos archivos están en MEGA:
-
-- [MpdfSetup.exe](https://mega.nz/file/a7ZXkBZB#aP_JsNJz5Px6qCX5RA1An_nQ7YcA9gBXzp_PWYVoGVo) — instalador, 64 MB.
-- [Mpdf.exe](https://mega.nz/file/H3pE3B7D#ufPntAoeYBlPhvR7bJyEEQmprC44Nknsx7S58Bo11sY) — portable, 146 MB.
+- [**MpdfSetup.exe**](https://mega.nz/file/a7ZXkBZB#aP_JsNJz5Px6qCX5RA1An_nQ7YcA9gBXzp_PWYVoGVo) — instalador para Windows 10/11 de 64 bits (64 MB). Incluye la aplicación, PDFium y todo lo necesario; no requiere conexión a Internet.
+- [Mpdf.exe](https://mega.nz/file/H3pE3B7D#ufPntAoeYBlPhvR7bJyEEQmprC44Nknsx7S58Bo11sY) — portable, sin instalación (146 MB).
 
 ## Funciones
 
