@@ -82,7 +82,11 @@ namespace Mpdf.Installer.Core
                 return;
             }
 
-            var command = "/c ping 127.0.0.1 -n 3 >nul & rmdir /s /q \"" + directory.TrimEnd('\\') + "\"";
+            // El desinstalador aún mantiene bloqueada su propia carpeta al cerrarse:
+            // se reintenta durante unos segundos hasta que desaparezca.
+            var quoted = "\"" + directory.TrimEnd('\\') + "\"";
+            var command = "/c for /l %i in (1,1,30) do @(rmdir /s /q " + quoted +
+                          " 2>nul & if not exist " + quoted + " exit & ping 127.0.0.1 -n 2 >nul)";
             try
             {
                 Process.Start(new ProcessStartInfo("cmd.exe", command)
