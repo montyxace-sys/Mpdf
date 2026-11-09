@@ -27,11 +27,14 @@ jobs:
           if (-not $st) { Write-Host "signtool no encontrado"; exit 1 }
           echo "path=$st" >> $env:GITHUB_OUTPUT
       - name: Sign binaries (if cert provided)
-        if: ${{ secrets.CODE_SIGN_CERT != '' && secrets.CODE_SIGN_PASSWORD != '' }}
         env:
           CODE_SIGN_CERT: ${{ secrets.CODE_SIGN_CERT }}
           CODE_SIGN_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
         run: |
+          if ([string]::IsNullOrWhiteSpace($env:CODE_SIGN_CERT)) {
+            Write-Host "No se proporciono certificado de firma. Se omite la firma."
+            exit 0
+          }
           $certPath = "$env:RUNNER_TEMP\codesign.pfx"
           [System.IO.File]::WriteAllBytes($certPath, [System.Convert]::FromBase64String($env:CODE_SIGN_CERT))
           $st = "${{ steps.signtool.outputs.path }}"
