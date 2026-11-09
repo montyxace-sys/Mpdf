@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build and publish portable
+        shell: pwsh
+        run: |
+          dotnet publish Mpdf.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+      - name: Create checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem .\publish\*.exe | ForEach-Object { (Get-FileHash $_ -Algorithm SHA256).Hash + "  " + $_.Name } | Out-File -Encoding ASCII publish/SHA256SUMS.txt
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            publish/*.exe
+            publish/SHA256SUMS.txt
