@@ -20,6 +20,25 @@ jobs:
         shell: pwsh
         run: |
           dotnet publish Mpdf.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+      - name: Locate signtool
+        id: signtool
+        run: |
+          $st = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          if (-not $st) { Write-Host "signtool no encontrado"; exit 1 }
+          echo "path=$st" >> $env:GITHUB_OUTPUT
+      - name: Sign binaries (if cert provided)
+        if: ${{ secrets.CODE_SIGN_CERT != '' && secrets.CODE_SIGN_PASSWORD != '' }}
+        env:
+          CODE_SIGN_CERT: ${{ secrets.CODE_SIGN_CERT }}
+          CODE_SIGN_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
+        run: |
+          $certPath = "$env:RUNNER_TEMP\codesign.pfx"
+          [System.IO.File]::WriteAllBytes($certPath, [System.Convert]::FromBase64String($env:CODE_SIGN_CERT))
+          $st = "${{ steps.signtool.outputs.path }}"
+          Get-ChildItem .\publish\*.exe -ErrorAction SilentlyContinue | ForEach-Object { & $st sign /fd sha256 /tr http://timestamp.digicert.com /td sha256 /f $certPath /p $env:CODE_SIGN_PASSWORD $_.FullName }
+          Get-ChildItem .\publish\*.msi -ErrorAction SilentlyContinue | ForEach-Object { & $st sign /fd sha256 /tr http://timestamp.digicert.com /td sha256 /f $certPath /p $env:CODE_SIGN_PASSWORD $_.FullName }
+          Remove-Item $certPath -Force
+
       - name: Create checksums
         shell: pwsh
         run: |
