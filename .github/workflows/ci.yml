@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Compilar y probar
+    runs-on: windows-latest
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restaurar
+        shell: pwsh
+        run: dotnet restore Mpdf.csproj
+
+      - name: Compilar
+        shell: pwsh
+        run: dotnet build Mpdf.csproj -c Release --warnaserror
+
+      # Las pruebas de motor leen PDFs de test/, que no están en el repositorio
+      # (test/*.pdf está en .gitignore): se generan antes con Node.
+      - name: Generar los PDFs de prueba
+        shell: pwsh
+        run: node test/make-test-pdfs.js
+
+      # Mpdf.EngineTests es una consola que devuelve 0 cuando todas las
+      # comprobaciones pasan.
+      - name: Probar el motor
+        shell: pwsh
+        run: dotnet run --project tests/Mpdf.EngineTests/Mpdf.EngineTests.csproj -c Release
