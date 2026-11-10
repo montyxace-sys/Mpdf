@@ -38,8 +38,14 @@ jobs:
         shell: pwsh
         run: node test/make-test-pdfs.js
 
-      # Mpdf.EngineTests es una consola que devuelve 0 cuando todas las
+      # Las dos suites son consolas que devuelven 0 cuando todas las
       # comprobaciones pasan.
       - name: Probar el motor
         shell: pwsh
         run: dotnet run --project tests/Mpdf.EngineTests/Mpdf.EngineTests.csproj -c Release
+
+      - name: Probar el instalador
+        shell: pwsh
+        run: |
+          dotnet build tests/Mpdf.InstallerTests/Mpdf.InstallerTests.csproj -c Release
+          dotnet run --project tests/Mpdf.InstallerTests/Mpdf.InstallerTests.csproj -c Release --no-build
