@@ -9,3 +9,4 @@ publish/
 # Archivos de prueba generados
 test/*.pdf
 test/out/
+dist/
