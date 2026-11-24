@@ -44,7 +44,7 @@
                                 <TextBlock Text="Mpdf" FontSize="30" FontWeight="Bold" Foreground="#FFFFFF"/>
                                 <TextBlock Text="Editor de PDF gratuito y de código abierto"
                                            FontSize="13" Foreground="#94A3B8" Margin="0,5,0,0"/>
-                                <TextBlock x:Name="txtVersion" Text="Versión 0.1.0"
+                                <TextBlock x:Name="txtVersion" Text="Versión 1.1.0"
                                            FontSize="11.5" Foreground="#64748B" Margin="0,9,0,0"/>
                             </StackPanel>
                         </StackPanel>

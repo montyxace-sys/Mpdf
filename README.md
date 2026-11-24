@@ -1,6 +1,6 @@
 # Mpdf
 
-Editor de PDF gratuito y de código abierto para Windows, con una interfaz moderna inspirada en Adobe Acrobat. Usa [PDFium](https://pdfium.googlesource.com/pdfium/) como motor de renderizado y escritura.
+Editor de PDF gratuito y de código abierto, con una interfaz moderna inspirada en Adobe Acrobat. La edición completa es para Windows y usa [PDFium](https://pdfium.googlesource.com/pdfium/); existe además una edición portable reducida para Windows, Linux, macOS, Android e iOS.
 
 ![Mpdf](docs/screenshot.png)
 
@@ -8,6 +8,9 @@ Editor de PDF gratuito y de código abierto para Windows, con una interfaz moder
 
 - [**MpdfSetup.exe**](https://mega.nz/file/a7ZXkBZB#aP_JsNJz5Px6qCX5RA1An_nQ7YcA9gBXzp_PWYVoGVo) — instalador para Windows 10/11 de 64 bits (64 MB). Incluye la aplicación, PDFium y todo lo necesario; no requiere conexión a Internet.
 - [Mpdf.exe](https://mega.nz/file/H3pE3B7D#ufPntAoeYBlPhvR7bJyEEQmprC44Nknsx7S58Bo11sY) — portable, sin instalación (146 MB).
+
+Los enlaces anteriores corresponden a 1.0. La versión 1.1 añade «Copiar imagen de esta
+página» y paquetes portables; sus enlaces se publicarán al subir los nuevos binarios.
 
 ## Funciones
 
@@ -42,15 +45,30 @@ Editor de PDF gratuito y de código abierto para Windows, con una interfaz moder
 - Propiedades del documento: tamaño, versión, metadatos, cifrado, permisos, marcadores y adjuntos.
 - Abrir o guardar archivos adjuntos incrustados.
 - Copiar el texto de una página o exportar el texto de todo el documento.
+- Copiar la imagen de la página actual al portapapeles a 150 ppp (desde el menú Herramientas o la paleta de comandos).
 
 ### Productividad
 - Paleta de comandos con Ctrl+K.
 - Atajos: Ctrl+O, Ctrl+S, Ctrl+Mayús+S, Ctrl+Z, Ctrl+Y, Ctrl+F, Ctrl+0, Ctrl+«+», Ctrl+«-», F11, Esc.
 
+## Edición portable
+
+`Mpdf.Core` y `Mpdf.App` separan el motor PDF y una interfaz Avalonia reducida. Permite
+abrir y ver PDFs, navegar páginas, exportar imagen o texto, girar y guardar. La CLI incluye
+`info`, `render`, `text`, `extract`, `merge`, `rotate` e `images`. El estado completo y las
+funciones no portadas están en [PORT-MULTIPLATAFORMA.md](PORT-MULTIPLATAFORMA.md).
+
+```powershell
+dotnet run --project Mpdf.Cli -- info test\sample.pdf
+powershell -ExecutionPolicy Bypass -File build-all.ps1
+```
+
 ## Requisitos
 
-- Windows 10 u 11 de 64 bits.
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) para compilar.
+- Edición WPF completa: Windows 10 u 11 de 64 bits.
+- Edición portable: Windows, Linux, macOS, Android 7 o iOS 17.4.
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) y SDK 11 con cargas
+  `android`/`ios` para compilar todas las cabezas.
 - Node.js solo si quieres regenerar los PDFs de prueba.
 
 ## Compilar y ejecutar
@@ -106,6 +124,10 @@ Models/      Modelos de página, anotaciones e información del documento
 Services/    Sesión del documento y enlaces P/Invoke con PDFium
 Styles/      Tema y estilos WPF
 Installer/   Instalador y desinstalador (WPF para .NET Framework 4.8)
+Mpdf.Core/   Motor PDF portable (PDFium + SkiaSharp)
+Mpdf.App/    Interfaz Avalonia compartida
+Mpdf.Desktop/Mpdf.Android/Mpdf.iOS/  Cabezas de cada plataforma
+Mpdf.Cli/    Utilidades de línea de comandos
 test/        Generador de PDFs de prueba y utilidades de verificación
 tests/       Pruebas del motor y del instalador
 ```
@@ -117,7 +139,8 @@ tests/       Pruebas del motor y del instalador
 - Sin OCR, formularios, capas, firmas digitales ni redacción real.
 - Sin vista de dos páginas, rotación de vista, temas oscuros ni tamaño de miniatura ajustable.
 - Sin recuperación automática tras un cierre inesperado.
-- Solo Windows x64.
+- La edición WPF completa es solo Windows x64. La portable cubre funciones básicas y no
+  incluye anotaciones, búsqueda, marcadores, adjuntos, estampado ni deshacer/rehacer.
 
 ## Agradecimientos
 

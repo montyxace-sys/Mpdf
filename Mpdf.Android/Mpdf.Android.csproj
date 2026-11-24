@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net11.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Mpdf.Android</RootNamespace>
+    <AssemblyName>Mpdf.Portable.Android</AssemblyName>
+    <ApplicationId>com.msoft.mpdf</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AndroidResource Include="Icon.png">
+      <Link>Resources\drawable\Icon.png</Link>
+    </AndroidResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Android" Version="11.3.23" />
+    <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.2" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Android" Version="2.88.9" />
+    <PackageReference Include="bblanchon.PDFium.Android" Version="160.0.8179" />
+    <ProjectReference Include="..\Mpdf.App\Mpdf.App.csproj" />
+  </ItemGroup>
+
+</Project>

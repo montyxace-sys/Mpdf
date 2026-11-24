@@ -439,7 +439,8 @@ public partial class MainWindow : Window
         miExtractRange.IsEnabled = hasDoc;
         miSplit.IsEnabled = hasDoc;
         miProperties.IsEnabled = hasDoc;
-        miCopyText.IsEnabled = hasDoc;
+        miCopyText.IsEnabled = hasDoc && page != null;
+        miCopyImage.IsEnabled = hasDoc && page != null;
         miExportText.IsEnabled = hasDoc;
         miExportImages.IsEnabled = hasDoc;
         miPageNumbers.IsEnabled = hasDoc;
@@ -1193,6 +1194,37 @@ public partial class MainWindow : Window
         }
     }
 
+    private async void MenuCopyImage_Click(object sender, RoutedEventArgs e)
+    {
+        var session = _session;
+        var page = SelectedPage;
+        if (session?.HasDocument != true || page == null || IsBusy) return;
+
+        SetBusy(true, "Renderizando la página…");
+        try
+        {
+            var targetWidth = page.DisplayWidthPoints * 150.0 / 72.0;
+            var bitmap = await session.RenderPageAsync(page.Id, targetWidth);
+            if (bitmap == null)
+            {
+                SetStatus("No se pudo renderizar la página.");
+                return;
+            }
+
+            Clipboard.SetImage(bitmap);
+            SetStatus($"Imagen de la página {page.DisplayLabel} copiada al portapapeles (150 ppp).");
+        }
+        catch (Exception ex)
+        {
+            ShowError("No se pudo copiar la imagen", ex);
+        }
+        finally
+        {
+            SetBusy(false);
+            UpdateUi();
+        }
+    }
+
     private async void MenuExportText_Click(object sender, RoutedEventArgs e)
     {
         var session = _session;
@@ -1548,6 +1580,8 @@ public partial class MainWindow : Window
                 () => MenuProperties_Click(this, new RoutedEventArgs())),
             new("Copiar texto de esta página", "Texto", () => HasDocument,
                 () => MenuCopyText_Click(this, new RoutedEventArgs())),
+            new("Copiar imagen de esta página", "Imagen", () => HasDocument,
+                () => MenuCopyImage_Click(this, new RoutedEventArgs())),
             new("Exportar texto…", "Texto", () => HasDocument,
                 () => MenuExportText_Click(this, new RoutedEventArgs())),
             new("Buscar en el documento", "Ctrl+F", () => HasDocument, FocusSearch),

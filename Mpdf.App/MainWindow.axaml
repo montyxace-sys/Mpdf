@@ -1,0 +1,11 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Mpdf.App"
+        x:Class="Mpdf.App.MainWindow"
+        Title="Mpdf portable"
+        Width="1100"
+        Height="800"
+        MinWidth="720"
+        MinHeight="520">
+  <local:MainView />
+</Window>

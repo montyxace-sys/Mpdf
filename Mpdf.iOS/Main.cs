@@ -1,0 +1,8 @@
+using UIKit;
+
+namespace Mpdf.iOS;
+
+public class Application
+{
+    static void Main(string[] args) => UIApplication.Main(args, null, typeof(AppDelegate));
+}

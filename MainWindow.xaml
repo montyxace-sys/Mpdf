@@ -112,6 +112,8 @@
                                           Click="MenuProperties_Click"/>
                                 <MenuItem x:Name="miCopyText" Header="Copiar texto de esta página"
                                           Click="MenuCopyText_Click"/>
+                                <MenuItem x:Name="miCopyImage" Header="Copiar imagen de esta página"
+                                          Click="MenuCopyImage_Click"/>
                                 <MenuItem x:Name="miExportText" Header="Exportar texto…" Click="MenuExportText_Click"/>
                                 <Separator/>
                                 <MenuItem Header="Paleta de comandos…    Ctrl+K" Click="MenuPalette_Click"/>

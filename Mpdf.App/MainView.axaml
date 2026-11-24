@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Mpdf.App.MainView">
+  <DockPanel LastChildFill="True">
+    <StackPanel DockPanel.Dock="Top" Margin="16,14" Spacing="10">
+      <TextBlock Text="Mpdf portable" FontSize="24" FontWeight="Bold" />
+      <TextBlock Text="Visor y utilidades PDF multiplataforma — PDFium" Foreground="#666666" />
+
+      <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto">
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="PDF" VerticalAlignment="Center" Margin="0,0,8,0" />
+        <TextBox x:Name="PathBox" Grid.Row="0" Grid.Column="1" Watermark="Ruta del archivo PDF"
+                 Text="/path/to/document.pdf" />
+        <Button x:Name="OpenButton" Grid.Row="0" Grid.Column="2" Margin="8,0,0,0" Click="OpenButton_Click">Abrir</Button>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Salida" VerticalAlignment="Center" Margin="0,8,8,0" />
+        <TextBox x:Name="OutputBox" Grid.Row="1" Grid.Column="1" Margin="0,8,0,0"
+                 Watermark="Ruta de salida para exportar" Text="/path/to/salida" />
+        <Button x:Name="ExportImageButton" Grid.Row="1" Grid.Column="2" Margin="8,8,0,0"
+                Click="ExportImageButton_Click">Exportar imagen</Button>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="DPI" VerticalAlignment="Center" Margin="0,8,8,0" />
+        <TextBox x:Name="DpiBox" Grid.Row="2" Grid.Column="1" Margin="0,8,0,0" Text="150" />
+        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Margin="8,8,0,0" Spacing="6">
+          <Button x:Name="PrevButton" Click="PrevButton_Click">◀</Button>
+          <TextBlock x:Name="PageLabel" VerticalAlignment="Center" Text="Sin documento" />
+          <Button x:Name="NextButton" Click="NextButton_Click">▶</Button>
+        </StackPanel>
+      </Grid>
+
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <Button x:Name="ExportTextButton" Click="ExportTextButton_Click">Exportar texto</Button>
+        <Button x:Name="RotateButton" Click="RotateButton_Click">Girar 90°</Button>
+        <Button x:Name="SaveButton" Click="SaveButton_Click">Guardar como</Button>
+      </StackPanel>
+
+      <TextBlock x:Name="StatusLabel" TextWrapping="Wrap" Foreground="#444444" />
+    </StackPanel>
+
+    <Border BorderBrush="#EDEDED" BorderThickness="1" Margin="16,0,16,16">
+      <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Image x:Name="PageImage" Stretch="Uniform" Margin="8" />
+      </ScrollViewer>
+    </Border>
+  </DockPanel>
+</UserControl>

@@ -85,8 +85,8 @@ namespace Mpdf.InstallerTests
 
             Check(ReadValue(layout, layout.UninstallKeyPath, "DisplayName") == "Mpdf",
                 "La entrada de Aplicaciones instaladas tiene nombre");
-            Check(ReadValue(layout, layout.UninstallKeyPath, "DisplayVersion") == "0.1.0",
-                "La versión es 0.1.0");
+            Check(ReadValue(layout, layout.UninstallKeyPath, "DisplayVersion") == "1.1.0",
+                "La versión es 1.1.0");
             Check(ReadValue(layout, layout.UninstallKeyPath, "Publisher") == "MSoft",
                 "El editor es MSoft");
             Check((ReadValue(layout, layout.UninstallKeyPath, "UninstallString") ?? string.Empty)
