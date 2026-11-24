@@ -18,7 +18,7 @@ namespace Mpdf.Installer.Core
             get
             {
                 var version = typeof(ProductInfo).Assembly.GetName().Version;
-                return version == null ? "0.1.0" : version.ToString(3);
+                return version == null ? "1.1.0" : version.ToString(3);
             }
         }
     }

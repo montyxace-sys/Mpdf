@@ -68,6 +68,7 @@ la clave de depuración: hay que firmarlo con la clave de MSoft antes de subirlo
 
 - `dotnet build Mpdf.csproj -c Release`: 0 errores, 0 advertencias.
 - 138 comprobaciones del motor WPF: 0 fallos.
+- 39 comprobaciones del instalador WPF: 0 fallos (versión 1.1.0).
 - Render y portapapeles de «Copiar imagen de esta página»: imagen `1240x1755` copiada y
   recuperada desde `Clipboard.GetImage()`.
 - `dotnet build Mpdf.Desktop\Mpdf.Desktop.csproj -c Release`: 0 errores, 0 advertencias.
